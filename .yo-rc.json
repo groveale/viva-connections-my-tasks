@@ -1,0 +1,19 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "MyTasks",
+    "componentType": "adaptiveCardExtension",
+    "aceTemplateType": "Image",
+    "componentName": "TasksTodo",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.15.2",
+    "libraryName": "my-tasks",
+    "libraryId": "a66cdc3a-faa2-46f7-af97-8883453c0ca7",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionShortDescription": "MyTasks description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false
+  }
+}
