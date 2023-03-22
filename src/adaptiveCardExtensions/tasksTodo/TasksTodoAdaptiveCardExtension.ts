@@ -5,6 +5,7 @@ import { QuickView } from './quickView/QuickView';
 import { TasksTodoPropertyPane } from './TasksTodoPropertyPane';
 import { graphService } from '../../common/services/MSGraphService';
 import { ITaskItem } from '../../common/models/ITask';
+import { DetailedQuickView } from './quickView/DetailedQuickView';
 
 export interface ITasksTodoAdaptiveCardExtensionProps {
   title: string;
@@ -12,10 +13,13 @@ export interface ITasksTodoAdaptiveCardExtensionProps {
 
 export interface ITasksTodoAdaptiveCardExtensionState {
   toDoTasks: ITaskItem[]
+  currentTaskKey: string;
 }
 
 const CARD_VIEW_REGISTRY_ID: string = 'TasksTodo_CARD_VIEW';
 export const QUICK_VIEW_REGISTRY_ID: string = 'TasksTodo_QUICK_VIEW';
+export const DETAILED_VIEW_REGISTRY_ID: string = 'TasksTodo_DETAILED_VIEW'
+
 
 export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExtension<
   ITasksTodoAdaptiveCardExtensionProps,
@@ -25,11 +29,14 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
 
   public async onInit(): Promise<void> {
     this.state = {
-        toDoTasks: []
+        toDoTasks: [],
+        currentTaskKey: ""
      };
 
     this.cardNavigator.register(CARD_VIEW_REGISTRY_ID, () => new CardView());
     this.quickViewNavigator.register(QUICK_VIEW_REGISTRY_ID, () => new QuickView());
+    this.quickViewNavigator.register(DETAILED_VIEW_REGISTRY_ID, () => new DetailedQuickView());
+
 
     const graphClient = await this.context.msGraphClientFactory.getClient("3");
 
@@ -55,9 +62,23 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
     // dedicated requests to speed up the load of the Adaptive Card (async)
     setTimeout(async () => {
       try {
-        const todoTasks: ITaskItem[] = await graphService.GetOutStandingTaskFromToDo();
-        this.setState({
-          toDoTasks: todoTasks
+
+        const todoTasks: ITaskItem[] = []
+        let index = 0;
+        var taskLists = await graphService.GetUsersTaskLists()
+
+        taskLists.forEach(async list => {
+            var tasks = await graphService.GetOutstandingTodoItemsInList(list);
+            
+            tasks.forEach(task => {
+                // Create ITaskListItem and add it to the array
+                todoTasks.push(graphService.GetITaskItemFromToDoItem(list, task))
+                
+                this.setState({
+                  toDoTasks: todoTasks
+                });
+            })
+            
         });
       } catch (error) {
         console.error(error);

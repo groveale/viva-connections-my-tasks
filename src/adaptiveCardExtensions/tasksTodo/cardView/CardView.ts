@@ -30,7 +30,7 @@ export class CardView extends BaseImageCardView<ITasksTodoAdaptiveCardExtensionP
   public get data(): IImageCardParameters {
     return {
       primaryText: `${this.state.toDoTasks.length} outstanding tasks`,
-      imageUrl: require('../assets/MicrosoftLogo.png'),
+      imageUrl: `https://reckittstorage.blob.core.windows.net/viva-connections-icons/mytasksimage.svg`,
       title: this.properties.title
     };
   }

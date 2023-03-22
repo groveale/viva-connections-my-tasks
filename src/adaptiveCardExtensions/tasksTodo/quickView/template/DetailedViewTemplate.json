@@ -1,0 +1,249 @@
+{
+  "type": "AdaptiveCard",
+  "body": [
+      {
+          "type": "Container",
+          "items": [
+              {
+                  "type": "TextBlock",
+                  "size": "Default",
+                  "weight": "Default",
+                  "text": "Task from ${task.source.name}",
+                  "horizontalAlignment": "Center"
+              }
+          ],
+          "bleed": true,
+          "style": "accent"
+      },
+      
+      {
+        "type": "Container",
+        "spacing": "Large",
+        "style": "default",
+        "items": [
+            {
+                "type": "ColumnSet",
+                "columns": [
+                    {
+                        "type": "Column",
+                        "width": "stretch",
+                        "items": [
+                            {
+                                "type": "TextBlock",
+                                "text": "${task.title}",
+                                "wrap": true,
+                                "size": "Medium",
+                                "weight": "Bolder"
+                            }
+                        ],
+                        "verticalContentAlignment": "Center"
+                    },
+                    {
+                        "type": "Column",
+                        "width": "32px",
+                        "items": [
+                            {
+                                "type": "Image",
+                                "url": "${task.source.avatarUri}",
+                                "altText": "${task.source.name}"
+                            }
+                        ],
+                        "verticalContentAlignment": "Center"
+                    }
+                ]
+            }
+        ]
+    },
+        {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": 20,
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Created by",
+                                    "wrap": true,
+                                    "weight": "Bolder"
+                                }
+                            ]
+                          
+
+                        },
+                        {
+                            "type": "Column",
+                            "width": 50,
+                            "items": [
+                                {
+                                    "type": "ColumnSet",
+                                    "columns": [
+                                        {
+                                            "type": "Column",
+                                            "width": "32px",
+                                            "items": [
+                                                {
+                                                    "type": "Image",
+                                                    "url": "${task.reporter.avatarUri}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "Column",
+                                            "width": "stretch",
+                                            "items": [
+                                                {
+                                                    "type": "TextBlock",
+                                                    "text": "${task.reporter.name}",
+                                                    "wrap": true
+                                                }
+                                            ],
+                                            "isVisible": false,
+                                            "verticalContentAlignment": "Center"
+                                        },
+                                        {
+                                            "type": "Column",
+                                            "width": "stretch",
+                                            "items": [
+                                                {
+                                                    "type": "ActionSet",
+                                                    "actions": [
+                                                        {
+                                                            "type": "Action.OpenUrl",
+                                                            "title": "Chat with ${task.reporter.name}",
+                                                            "url": "sip:${task.reporter.email}",
+                                                            "iconUrl": "https://reckittstorage.blob.core.windows.net/viva-connections-icons/teams.svg"
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "verticalContentAlignment": "Center"
+                                        }
+                                    ],
+                                    "spacing": "Medium"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "spacing": "Large"
+        },
+    {
+      "type": "ColumnSet",
+      "columns": [
+          {
+              "type": "Column",
+              "width": 30,
+              "items": [
+                  {
+                      "type": "TextBlock",
+                      "text": "Opened",
+                      "wrap": true,
+                      "weight": "Bolder"
+                  }
+              ]
+          },
+          {
+              "type": "Column",
+              "width": 70,
+              "items": [
+                  {
+                      "type": "TextBlock",
+                      "text": "{{DATE(${task.created},COMPACT)}}",
+                      "wrap": true,
+                      "size": "Default",
+                      "isSubtle": false,
+                      "color": "${if(task.overDueDays != '', 'attention','Default')}",
+                      "weight": "Bolder"
+                  }
+              ]
+          }
+      ],
+      "spacing": "Large"
+    },
+      {
+          "type": "ColumnSet",
+          "columns": [
+              {
+                  "type": "Column",
+                  "width": 30,
+                  "items": [
+                      {
+                          "type": "TextBlock",
+                          "text": "Description",
+                          "wrap": true,
+                          "weight": "Bolder"
+                      }
+                  ]
+              },
+              {
+                  "type": "Column",
+                  "items": [
+                      {
+                          "type": "TextBlock",
+                          "text": "${task.description}",
+                          "wrap": true,
+                          "spacing": "Medium"
+                      }
+                  ],
+                  "width": 70
+              }
+          ],
+          "spacing": "Large"
+      },
+      {
+          "type": "ColumnSet",
+          "columns": [
+              {
+                  "type": "Column",
+                  "width": 30,
+                  "items": [
+                      {
+                          "type": "TextBlock",
+                          "text": "Status",
+                          "wrap": true,
+                          "weight": "Bolder"
+                      }
+                  ]
+              },
+              {
+                  "type": "Column",
+                  "width": 70,
+                  "items": [
+                      {
+                          "type": "TextBlock",
+                          "text": "${task.statusText}",
+                          "wrap": true
+                      }
+                  ]
+              }
+          ],
+          "spacing": "Large"
+      },
+      {
+          "type": "ActionSet",
+          "actions": [
+              {
+                  "type": "Action.Submit",
+                  "title": "Mark task complete on ${task.source.name}",
+                  "data": {
+                      "id": "closeTask",
+                      "taskKey": "${task.id}"
+                  }
+              },
+              {
+                  "type": "Action.OpenUrl",
+                  "title": "View task on ${task.source.name}",
+                  "url": "${task.source.uri}"
+              }
+          ],
+          "spacing": "Large"
+      }
+  ],
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.3"
+}

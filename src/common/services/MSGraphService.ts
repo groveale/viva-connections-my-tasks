@@ -1,6 +1,6 @@
 import { MSGraphClientV3 } from '@microsoft/sp-http'
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { ITaskItem, TaskPlatform } from '../models/ITask';
+import { ITaskItem, PlatformLogo, TaskPlatform } from '../models/ITask';
 
 export enum WellKnownNames {
     FlaggedEmails = "flaggedEmails",
@@ -40,8 +40,12 @@ export class GraphService implements IGraphService {
 
         // return tasks that are not completed in the list
         return await this.graphClient.api(`/me/todo/lists/${list.id}/tasks`)
-                .filter('status ne \'completed\'')        
-                .get();
+            .filter('status ne \'completed\'')        
+            .get()
+            .then((response) => {
+                // Need to return the actual array of tasks
+                return response.value;
+            })
     }
 
     public async GetUsersTaskLists (): Promise<MicrosoftGraph.TodoTaskList[]> {
@@ -49,7 +53,11 @@ export class GraphService implements IGraphService {
             throw new Error('GraphService not initialized!')
         }
         
-        return await this.graphClient.api('/me/todo/lists').get();
+        return await this.graphClient.api('/me/todo/lists').get()
+            .then((response) => {
+                // Need to return the actual array of task lists
+                return response.value;
+            })
     }
 
     public GetITaskItemFromToDoItem(list: MicrosoftGraph.TodoTaskList, todoItem: MicrosoftGraph.TodoTask): ITaskItem {
@@ -66,9 +74,14 @@ export class GraphService implements IGraphService {
         }
 
         let dueDateString: string = ""
+        let overDueDays: string = ""
         if (todoItem.dueDateTime)
         {
             dueDateString = todoItem.dueDateTime.dateTime;
+            if (new Date(todoItem.dueDateTime.dateTime).getMilliseconds() < Date.now()) {
+                // Overdue
+                overDueDays = Math.round((Date.now() - new Date(todoItem.dueDateTime.dateTime).getMilliseconds()) / (1000 * 60 * 60 * 24)).toString();
+            }
         }
 
         return  {
@@ -82,7 +95,9 @@ export class GraphService implements IGraphService {
             // used for ordering
             createdDate: new Date(todoItem.createdDateTime),
             dueDate: dueDateString,
-            platform: TaskPlatform.ToDo
+            platform: TaskPlatform.ToDo,
+            logoUrl: PlatformLogo.ToDo,
+            overDueDays: overDueDays
         };
     }
 
@@ -91,12 +106,12 @@ export class GraphService implements IGraphService {
 
         // Change to chained thens
 
-        var taskLists = await this.GetUsersTaskLists()
+        var taskLists: MicrosoftGraph.TodoTaskList[] = await this.GetUsersTaskLists()
 
         taskLists.forEach(async list => {
             var tasks = await this.GetOutstandingTodoItemsInList(list);
             
-            tasks.forEach(task => {
+            await tasks.forEach(task => {
                 // Create ITaskListItem and add it to the array
                 taskListItems.push(this.GetITaskItemFromToDoItem(list, task))
 
@@ -106,6 +121,7 @@ export class GraphService implements IGraphService {
 
         return taskListItems;
     }
+    
 }
 
 
