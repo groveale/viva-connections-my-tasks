@@ -16,14 +16,17 @@ export interface IGraphService {
     Init: (graphClient: MSGraphClientV3, loggedinUsersUPN: string) => void;    
     GetOutstandingTodoItemsInList: (list: MicrosoftGraph.TodoTaskList) => Promise<MicrosoftGraph.TodoTask[]>;
     GetUsersTaskLists: () => Promise<MicrosoftGraph.TodoTaskList[]>;
-    GetOutStandingTaskFromToDo: () => Promise<ITaskItem[]>;
+    
     GetITaskItemFromToDoItem: (list: MicrosoftGraph.TodoTaskList, todoItem: MicrosoftGraph.TodoTask) => ITaskItem
 
+    GetUsersPlannerTasks: () => Promise<MicrosoftGraph.PlannerTask[]>;
+    GetITaskItemFromPlannerItem: (plannerItem: MicrosoftGraph.PlannerTask, plannerPlan: MicrosoftGraph.PlannerPlan[]) => ITaskItem
 }
 
 export class GraphService implements IGraphService {
     
     
+    //public UsersPlannerPlans: MicrosoftGraph.PlannerPlan[] = []
     private graphClient: MSGraphClientV3;
     private upn: string
     private flaggedEmailListId: string
@@ -101,26 +104,70 @@ export class GraphService implements IGraphService {
         };
     }
 
-    public async GetOutStandingTaskFromToDo (): Promise<ITaskItem[]> {
-        let taskListItems: ITaskItem[] = [] 
 
-        // Change to chained thens
+    public async GetUsersPlannerTasks(): Promise<MicrosoftGraph.PlannerTask[]> {
+        if (this.graphClient === undefined){
+            throw new Error('GraphService not initialized!')
+        }
 
-        var taskLists: MicrosoftGraph.TodoTaskList[] = await this.GetUsersTaskLists()
-
-        taskLists.forEach(async list => {
-            var tasks = await this.GetOutstandingTodoItemsInList(list);
-            
-            await tasks.forEach(task => {
-                // Create ITaskListItem and add it to the array
-                taskListItems.push(this.GetITaskItemFromToDoItem(list, task))
-
+        // return tasks that are not completed in the list
+        return await this.graphClient.api(`/me/planner/tasks`)    
+            .get()
+            .then((response) => {
+                // Need to return the actual array of planner tasks
+                return response.value;
             })
-            
-        });
-
-        return taskListItems;
     }
+
+    public async GetUsersPlanerPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
+        if (this.graphClient === undefined){
+            throw new Error('GraphService not initialized!')
+        }
+
+        return await this.graphClient.api('/me/planner/plans')
+            // filter does not work with this call :S
+            //.filter(`id eq \'${task.planId}\'`)
+            .get()
+            .then((response) => {
+                return response.value;
+            })
+    
+    }
+
+    public GetITaskItemFromPlannerItem(plannerItem: MicrosoftGraph.PlannerTask, plannerPlan: MicrosoftGraph.PlannerPlan[]): ITaskItem {
+
+
+        let dueDateString: string = ""
+        let overDueDays: string = ""
+        let planTitle: string = ""
+        if (plannerItem.dueDateTime)
+        {
+            dueDateString = plannerItem.dueDateTime;
+            if (new Date(plannerItem.dueDateTime).getMilliseconds() < Date.now()) {
+                // Overdue
+                overDueDays = Math.round((Date.now() - new Date(plannerItem.dueDateTime).getMilliseconds()) / (1000 * 60 * 60 * 24)).toString();
+            }
+        }
+
+        if (plannerPlan.length > 0) {
+            planTitle = plannerPlan[0].title
+        }
+
+        return  {
+            listName: planTitle,
+            title: plannerItem.title,
+            //description: plannerItem.details.description,
+            today: false,
+            id: plannerItem.id,
+            // used for ordering
+            createdDate: new Date(plannerItem.createdDateTime),
+            dueDate: dueDateString,
+            platform: TaskPlatform.Planner,
+            logoUrl: PlatformLogo.Planner,
+            overDueDays: overDueDays
+        };
+    }
+
     
 }
 

@@ -6,6 +6,7 @@ import {
   ICardButton
 } from '@microsoft/sp-adaptive-card-extension-base';
 import * as strings from 'TasksTodoAdaptiveCardExtensionStrings';
+import { ITaskItem } from '../../../common/models/ITask';
 import { ITasksTodoAdaptiveCardExtensionProps, ITasksTodoAdaptiveCardExtensionState, QUICK_VIEW_REGISTRY_ID } from '../TasksTodoAdaptiveCardExtension';
 
 export class CardView extends BaseImageCardView<ITasksTodoAdaptiveCardExtensionProps, ITasksTodoAdaptiveCardExtensionState> {
@@ -28,8 +29,11 @@ export class CardView extends BaseImageCardView<ITasksTodoAdaptiveCardExtensionP
   }
 
   public get data(): IImageCardParameters {
+
+    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks);
+    
     return {
-      primaryText: `${this.state.toDoTasks.length} outstanding tasks`,
+      primaryText: `${allTasks.length} outstanding tasks`,
       imageUrl: `https://reckittstorage.blob.core.windows.net/viva-connections-icons/mytasksimage.svg`,
       title: this.properties.title
     };

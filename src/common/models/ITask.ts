@@ -1,8 +1,8 @@
 export interface ITaskItem {
-    listName: string,
+    listName?: string,
     title: string,
     description?: string,
-    important: boolean,
+    important?: boolean,
     // inferred from due date
     today: boolean,
     id: string,
@@ -11,17 +11,20 @@ export interface ITaskItem {
     dueDate?: string,
     overDueDays?: string,
     createdDate: Date,
-    fromMail: boolean,
+    fromMail?: boolean,
     platform: TaskPlatform
     logoUrl: PlatformLogo
 }
 
 export enum TaskPlatform {
     ToDo = "todo",
-    AzureDevOps = "ado"
+    AzureDevOps = "ado",
+    Planner = "planner",
 }
 
 export enum PlatformLogo {
     ToDo = "https://reckittstorage.blob.core.windows.net/viva-connections-icons/mstodo.svg",
-    AzureDevOps = "ado"
+    AzureDevOps = "ado",
+    Planner = "https://reckittstorage.blob.core.windows.net/viva-connections-icons/planner.png",
+
 }

@@ -6,6 +6,7 @@ import { TasksTodoPropertyPane } from './TasksTodoPropertyPane';
 import { graphService } from '../../common/services/MSGraphService';
 import { ITaskItem } from '../../common/models/ITask';
 import { DetailedQuickView } from './quickView/DetailedQuickView';
+import { PlannerPlan } from '@microsoft/microsoft-graph-types';
 
 export interface ITasksTodoAdaptiveCardExtensionProps {
   title: string;
@@ -13,6 +14,7 @@ export interface ITasksTodoAdaptiveCardExtensionProps {
 
 export interface ITasksTodoAdaptiveCardExtensionState {
   toDoTasks: ITaskItem[]
+  plannerTasks: ITaskItem[]
   currentTaskKey: string;
 }
 
@@ -30,6 +32,7 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
   public async onInit(): Promise<void> {
     this.state = {
         toDoTasks: [],
+        plannerTasks: [],
         currentTaskKey: ""
      };
 
@@ -59,7 +62,10 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
   }
 
   private GetTaskData(): Promise<void> {
+    
     // dedicated requests to speed up the load of the Adaptive Card (async)
+
+    // Get ToDo Tasks
     setTimeout(async () => {
       try {
 
@@ -80,6 +86,32 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
             })
             
         });
+      } catch (error) {
+        console.error(error);
+      }
+    }, 500)
+
+
+    // Get Planner Tasks
+    setTimeout(async () => {
+      try {
+
+        const plannerTasks: ITaskItem[] = []
+        let index = 0;
+        var planerPlans = await graphService.GetUsersPlanerPlans()
+        var plansFromPlanner = await graphService.GetUsersPlannerTasks()
+
+        plansFromPlanner.forEach(async plan => {
+            // Create ITaskListItem and add it to the array
+
+            var plannerPlan: PlannerPlan[] = planerPlans.filter((item: PlannerPlan) => item.id === plan.planId)
+
+            plannerTasks.push(graphService.GetITaskItemFromPlannerItem(plan, plannerPlan))
+            
+            this.setState({
+              plannerTasks: plannerTasks
+            });
+          })
       } catch (error) {
         console.error(error);
       }

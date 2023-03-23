@@ -15,14 +15,15 @@ export class QuickView extends BaseAdaptiveCardView<
 > {
   public get data(): IQuickViewData {
     let numberOfTasks: string = strings.CardViewZero;
-    if (this.state.toDoTasks.length > 1) {
-      numberOfTasks = `${this.state.toDoTasks.length.toString()} ${strings.CardViewTextPlural}`;
+    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks);
+    if (allTasks.length > 1) {
+      numberOfTasks = `${allTasks.length.toString()} ${strings.CardViewTextPlural}`;
     } else {
-      numberOfTasks = `${this.state.toDoTasks.length.toString()} ${strings.CardViewTextSingular}`;
+      numberOfTasks = `${allTasks.length.toString()} ${strings.CardViewTextSingular}`;
     }
     return {
       numberOfTasks: numberOfTasks,
-      tasks: this.state.toDoTasks,
+      tasks: allTasks,
       strings: strings,
     };
   }
