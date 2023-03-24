@@ -15,7 +15,7 @@ export class QuickView extends BaseAdaptiveCardView<
 > {
   public get data(): IQuickViewData {
     let numberOfTasks: string = strings.CardViewZero;
-    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks);
+    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks, this.state.adoTasks);
     if (allTasks.length > 1) {
       numberOfTasks = `${allTasks.length.toString()} ${strings.CardViewTextPlural}`;
     } else {

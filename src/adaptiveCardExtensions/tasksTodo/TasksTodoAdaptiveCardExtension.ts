@@ -7,6 +7,7 @@ import { graphService } from '../../common/services/MSGraphService';
 import { ITaskItem } from '../../common/models/ITask';
 import { DetailedQuickView } from './quickView/DetailedQuickView';
 import { PlannerPlan } from '@microsoft/microsoft-graph-types';
+// import { adoService } from '../../common/services/ADOService';
 
 export interface ITasksTodoAdaptiveCardExtensionProps {
   title: string;
@@ -15,6 +16,7 @@ export interface ITasksTodoAdaptiveCardExtensionProps {
 export interface ITasksTodoAdaptiveCardExtensionState {
   toDoTasks: ITaskItem[]
   plannerTasks: ITaskItem[]
+  adoTasks: ITaskItem[]
   currentTaskKey: string;
 }
 
@@ -33,6 +35,7 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
     this.state = {
         toDoTasks: [],
         plannerTasks: [],
+        adoTasks: [],
         currentTaskKey: ""
      };
 
@@ -45,6 +48,9 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
 
     // Graph service for a clean design
     graphService.Init(graphClient, this.context.pageContext.user.email);
+
+    // move orgname to property pane
+    //adoService.Init("groveale", this.context.pageContext.user.email)
 
     return this.GetTaskData();
   }
@@ -116,6 +122,27 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
         console.error(error);
       }
     }, 500)
+
+    // Get Dev ops Tasks
+    // setTimeout(async () => {
+    //   try {
+
+    //     const adoTasks: ITaskItem[] = []
+    //     var adoWorkItems = await adoService.GetWorkItems()
+
+    //     adoWorkItems.forEach(workItem => {
+    //         // Create ITaskListItem and add it to the array
+
+    //         adoTasks.push(adoService.GetITaskItemFromADOWorkItem(workItem))
+            
+    //         this.setState({
+    //           adoTasks: adoTasks
+    //         });
+    //       })
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }, 500)
 
     return Promise.resolve();
   }

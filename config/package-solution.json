@@ -37,10 +37,6 @@
       {
         "resource": "Microsoft Graph",
         "scope": "Tasks.ReadWrite"
-      },
-      {
-        "resource": "Azure DevOps",
-        "scope": "vso.work_write"
       }
     ]
   },

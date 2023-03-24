@@ -30,7 +30,7 @@ export class CardView extends BaseImageCardView<ITasksTodoAdaptiveCardExtensionP
 
   public get data(): IImageCardParameters {
 
-    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks);
+    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks, this.state.adoTasks)
     
     return {
       primaryText: `${allTasks.length} outstanding tasks`,

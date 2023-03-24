@@ -10,7 +10,7 @@ export interface ITaskItem {
     order?: number,
     dueDate?: string,
     overDueDays?: string,
-    createdDate: Date,
+    createdDate?: Date,
     fromMail?: boolean,
     platform: TaskPlatform
     logoUrl: PlatformLogo
@@ -24,7 +24,7 @@ export enum TaskPlatform {
 
 export enum PlatformLogo {
     ToDo = "https://reckittstorage.blob.core.windows.net/viva-connections-icons/mstodo.svg",
-    AzureDevOps = "ado",
+    AzureDevOps = "https://reckittstorage.blob.core.windows.net/viva-connections-icons/azuredevops.svg",
     Planner = "https://reckittstorage.blob.core.windows.net/viva-connections-icons/planner.png",
 
 }

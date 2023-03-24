@@ -9,6 +9,7 @@
     "test": "gulp test"
   },
   "dependencies": {
+    "@azure/msal-node": "^1.16.0",
     "@microsoft/microsoft-graph-types": "^2.26.0",
     "@microsoft/sp-adaptive-card-extension-base": "1.15.2",
     "@microsoft/sp-core-library": "1.15.2",
