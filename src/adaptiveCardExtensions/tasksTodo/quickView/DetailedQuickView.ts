@@ -4,6 +4,7 @@ import { ITasksTodoAdaptiveCardExtensionProps, ITasksTodoAdaptiveCardExtensionSt
 
 export interface IDetailedQuickViewData {
   task: any;
+  allTasks: any[];
   strings: ITasksTodoAdaptiveCardExtensionStrings;
 }
 
@@ -13,11 +14,13 @@ ITasksTodoAdaptiveCardExtensionProps,
     IDetailedQuickViewData
 > {
   public get data(): IDetailedQuickViewData {
-    const tasks = this.state.toDoTasks.filter((task: any) => {
+    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks, this.state.adoTasks);
+    const tasks = allTasks.filter((task: any) => {
         return task.id === this.state.currentTaskKey;
       });
     return {
       task: tasks[0],
+      allTasks: allTasks,
       strings: strings,
     };
   }
@@ -33,7 +36,8 @@ ITasksTodoAdaptiveCardExtensionProps,
       if (id === 'closeTask') {
         // We actually need to mark as complete in todo
         this.setState({ 
-            toDoTasks: this.state.toDoTasks.filter((item: any) => item.id !== taskKey)
+            toDoTasks: this.state.toDoTasks.filter((item: any) => item.id !== taskKey),
+            plannerTasks: this.state.plannerTasks.filter((item: any) => item.id !== taskKey),
         });
         this.quickViewNavigator.pop();
         }

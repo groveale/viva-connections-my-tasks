@@ -10,10 +10,14 @@ export interface ITaskItem {
     order?: number,
     dueDate?: string,
     overDueDays?: string,
-    createdDate?: Date,
+    createdDate: Date,
+    createdDateString: string,
     fromMail?: boolean,
     platform: TaskPlatform
     logoUrl: PlatformLogo
+    source?: string
+    deepLinkUrl?: string
+    percentComplete?: number
 }
 
 export enum TaskPlatform {

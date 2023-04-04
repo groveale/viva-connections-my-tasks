@@ -68,7 +68,10 @@
                                 {
                                     "type": "Image",
                                     "url": "${logoUrl}",
-                                    "altText": "${platform}"
+                                    "altText": "${platform}",
+                                    "horizontalAlignment": "Center",
+                                    "height": "auto",
+                                    "size": "stretch"
                                 }
                             ],
                             "verticalContentAlignment": "Center"

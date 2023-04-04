@@ -8,7 +8,7 @@
                   "type": "TextBlock",
                   "size": "Default",
                   "weight": "Default",
-                  "text": "Task from ${task.source.name}",
+                  "text": "Task from ${task.source}",
                   "horizontalAlignment": "Center"
               }
           ],
@@ -44,8 +44,8 @@
                         "items": [
                             {
                                 "type": "Image",
-                                "url": "${task.source.avatarUri}",
-                                "altText": "${task.source.name}"
+                                "url": "${task.logoUrl}",
+                                "altText": "${task.platform}"
                             }
                         ],
                         "verticalContentAlignment": "Center"
@@ -130,7 +130,8 @@
                     ]
                 }
             ],
-            "spacing": "Large"
+            "spacing": "Large",
+            "isVisible": false
         },
     {
       "type": "ColumnSet",
@@ -153,7 +154,7 @@
               "items": [
                   {
                       "type": "TextBlock",
-                      "text": "{{DATE(${task.created},COMPACT)}}",
+                      "text": "{{DATE(${task.createdDateString},COMPACT)}}",
                       "wrap": true,
                       "size": "Default",
                       "isSubtle": false,
@@ -204,7 +205,7 @@
                   "items": [
                       {
                           "type": "TextBlock",
-                          "text": "Status",
+                          "text": "Percent Complete",
                           "wrap": true,
                           "weight": "Bolder"
                       }
@@ -216,20 +217,21 @@
                   "items": [
                       {
                           "type": "TextBlock",
-                          "text": "${task.statusText}",
+                          "text": "${task.percentComplete}%",
                           "wrap": true
                       }
                   ]
               }
           ],
-          "spacing": "Large"
+          "spacing": "Large",
+          "isVisible": "${if(task.platform == 'planner', 'true', 'false')}"
       },
       {
           "type": "ActionSet",
           "actions": [
               {
                   "type": "Action.Submit",
-                  "title": "Mark task complete on ${task.source.name}",
+                  "title": "Mark task complete on ${task.source}",
                   "data": {
                       "id": "closeTask",
                       "taskKey": "${task.id}"
@@ -237,8 +239,8 @@
               },
               {
                   "type": "Action.OpenUrl",
-                  "title": "View task on ${task.source.name}",
-                  "url": "${task.source.uri}"
+                  "title": "View task on ${task.source}",
+                  "url": "${task.deepLinkUrl}"
               }
           ],
           "spacing": "Large"

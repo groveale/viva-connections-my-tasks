@@ -4,9 +4,10 @@ import { CardView } from './cardView/CardView';
 import { QuickView } from './quickView/QuickView';
 import { TasksTodoPropertyPane } from './TasksTodoPropertyPane';
 import { graphService } from '../../common/services/MSGraphService';
-import { ITaskItem } from '../../common/models/ITask';
+import { ITaskItem, PlatformLogo, TaskPlatform } from '../../common/models/ITask';
 import { DetailedQuickView } from './quickView/DetailedQuickView';
 import { PlannerPlan } from '@microsoft/microsoft-graph-types';
+import { ComingSoonQuickView } from './quickView/ComingSoonQuickView';
 // import { adoService } from '../../common/services/ADOService';
 
 export interface ITasksTodoAdaptiveCardExtensionProps {
@@ -23,6 +24,7 @@ export interface ITasksTodoAdaptiveCardExtensionState {
 const CARD_VIEW_REGISTRY_ID: string = 'TasksTodo_CARD_VIEW';
 export const QUICK_VIEW_REGISTRY_ID: string = 'TasksTodo_QUICK_VIEW';
 export const DETAILED_VIEW_REGISTRY_ID: string = 'TasksTodo_DETAILED_VIEW'
+export const COMING_SOON_VIEW_REGISTRY_ID: string = 'TasksTodo_COMING_SOON_VIEW'
 
 
 export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExtension<
@@ -35,13 +37,14 @@ export default class TasksTodoAdaptiveCardExtension extends BaseAdaptiveCardExte
     this.state = {
         toDoTasks: [],
         plannerTasks: [],
-        adoTasks: [],
+        adoTasks: [{ title: "Coming Soon", listName: "Azure Dev Ops", id: "devops-coming-soon", platform: TaskPlatform.AzureDevOps, logoUrl: PlatformLogo.AzureDevOps, today: true, createdDate: new Date(), createdDateString: (new Date()).toDateString() }],
         currentTaskKey: ""
      };
 
     this.cardNavigator.register(CARD_VIEW_REGISTRY_ID, () => new CardView());
     this.quickViewNavigator.register(QUICK_VIEW_REGISTRY_ID, () => new QuickView());
     this.quickViewNavigator.register(DETAILED_VIEW_REGISTRY_ID, () => new DetailedQuickView());
+    this.quickViewNavigator.register(COMING_SOON_VIEW_REGISTRY_ID, () => new ComingSoonQuickView());
 
 
     const graphClient = await this.context.msGraphClientFactory.getClient("3");

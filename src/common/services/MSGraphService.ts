@@ -97,11 +97,25 @@ export class GraphService implements IGraphService {
             id: todoItem.id,
             // used for ordering
             createdDate: new Date(todoItem.createdDateTime),
+            // because adaptive cards does not support ISO 8601 format
+            createdDateString: (new Date(todoItem.createdDateTime)).toISOString().substr(0, 19) + "Z",
             dueDate: dueDateString,
             platform: TaskPlatform.ToDo,
             logoUrl: PlatformLogo.ToDo,
-            overDueDays: overDueDays
+            overDueDays: overDueDays,
+            source: "ToDo",
+            deepLinkUrl: this.GetDeepLinkUrlForToDoTask(todoItem.id)
+
         };
+    }
+
+
+    private GetDeepLinkUrlForToDoTask(taskId: string): string {
+        
+        const teamsAppId = 'com.microsoft.teamspace.tab.planner'; // The app ID for Tasks by Planner and To Do
+        const deepLink = `msteams://teams.microsoft.com/l/entity/${teamsAppId}/tasks?webUrl=https%3A%2F%2Fto-do.office.com`;
+
+        return deepLink;
     }
 
 
@@ -156,15 +170,20 @@ export class GraphService implements IGraphService {
         return  {
             listName: planTitle,
             title: plannerItem.title,
-            //description: plannerItem.details.description,
+            description: "",
             today: false,
             id: plannerItem.id,
             // used for ordering
             createdDate: new Date(plannerItem.createdDateTime),
+            // because adaptive cards does not support ISO 8601 format
+            createdDateString: (new Date(plannerItem.createdDateTime)).toISOString().substr(0, 19) + "Z",
             dueDate: dueDateString,
             platform: TaskPlatform.Planner,
             logoUrl: PlatformLogo.Planner,
-            overDueDays: overDueDays
+            overDueDays: overDueDays,
+            source: "Planner",
+            percentComplete: plannerItem.percentComplete,
+            deepLinkUrl: this.GetDeepLinkUrlForToDoTask(plannerItem.id)
         };
     }
 

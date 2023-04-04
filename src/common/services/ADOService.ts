@@ -3,6 +3,8 @@
 // import { WorkItem } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 // import { ITaskItem, PlatformLogo, TaskPlatform } from "../models/ITask";
 
+// https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/service-principal-managed-identity?view=azure-devops
+
 // //https://github.com/microsoft/azure-devops-node-api/blob/master/samples/task.ts
 
 // export interface IADOService {
