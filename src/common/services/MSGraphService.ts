@@ -21,6 +21,7 @@ export interface IGraphService {
 
     GetUsersPlannerTasks: () => Promise<MicrosoftGraph.PlannerTask[]>;
     GetITaskItemFromPlannerItem: (plannerItem: MicrosoftGraph.PlannerTask, plannerPlan: MicrosoftGraph.PlannerPlan[]) => ITaskItem
+    MarkTaskAsDone: (task: ITaskItem) => Promise<void>;
 }
 
 export class GraphService implements IGraphService {
@@ -90,6 +91,7 @@ export class GraphService implements IGraphService {
         return  {
             fromMail: fromMail,
             listName: list.displayName,
+            listId: list.id,
             title: todoItem.title,
             description: todoItem.body.content,
             important: important,
@@ -118,6 +120,32 @@ export class GraphService implements IGraphService {
         return deepLink;
     }
 
+
+    public async MarkTaskAsDone(task: ITaskItem): Promise<void> {
+        if (this.graphClient === undefined){
+            throw new Error('GraphService not initialized!')
+        }
+
+
+        switch (task.platform) {
+            case TaskPlatform.ToDo:
+                await this.graphClient.api(`/me/todo/lists/${task.listId}/tasks/${task.id}`)
+                    .patch({
+                        status: "completed"
+                    })
+                break;
+            case TaskPlatform.Planner:
+                // need more permissions to do this
+                // await this.graphClient.api(`/planner/tasks/${task.id}`)
+                //     .patch({
+                //         percentComplete: 100
+                //     })
+                break;
+            default:
+                // do nothing
+        }
+        
+    }
 
     public async GetUsersPlannerTasks(): Promise<MicrosoftGraph.PlannerTask[]> {
         if (this.graphClient === undefined){

@@ -18,6 +18,7 @@ export interface ITaskItem {
     source?: string
     deepLinkUrl?: string
     percentComplete?: number
+    listId?: string
 }
 
 export enum TaskPlatform {

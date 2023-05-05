@@ -3,7 +3,7 @@
   "solution": {
     "name": "my-tasks-client-side-solution",
     "id": "a66cdc3a-faa2-46f7-af97-8883453c0ca7",
-    "version": "1.0.0.0",
+    "version": "1.0.0.1",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -30,7 +30,7 @@
         "title": "my-tasks Feature",
         "description": "The feature that activates elements of the my-tasks solution.",
         "id": "54a82f2c-437c-4af4-b553-23901be20d56",
-        "version": "1.0.0.0"
+        "version": "1.0.0.1"
       }
     ],
     "webApiPermissionRequests": [

@@ -1,6 +1,8 @@
 import { ISPFxAdaptiveCard, BaseAdaptiveCardView, IActionArguments, ISubmitActionArguments } from '@microsoft/sp-adaptive-card-extension-base';
 import * as strings from 'TasksTodoAdaptiveCardExtensionStrings';
 import { ITasksTodoAdaptiveCardExtensionProps, ITasksTodoAdaptiveCardExtensionState } from '../TasksTodoAdaptiveCardExtension';
+import { graphService } from '../../../common/services/MSGraphService';
+import { TaskPlatform } from '../../../common/models/ITask';
 
 export interface IDetailedQuickViewData {
   task: any;
@@ -35,6 +37,7 @@ ITasksTodoAdaptiveCardExtensionProps,
       const { id, taskKey } = submitAction.data;
       if (id === 'closeTask') {
         // We actually need to mark as complete in todo
+        graphService.MarkTaskAsDone(this.data.task);
         this.setState({ 
             toDoTasks: this.state.toDoTasks.filter((item: any) => item.id !== taskKey),
             plannerTasks: this.state.plannerTasks.filter((item: any) => item.id !== taskKey),

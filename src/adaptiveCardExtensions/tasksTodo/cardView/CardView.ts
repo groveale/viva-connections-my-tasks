@@ -30,10 +30,17 @@ export class CardView extends BaseImageCardView<ITasksTodoAdaptiveCardExtensionP
 
   public get data(): IImageCardParameters {
 
-    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks, this.state.adoTasks)
+    var allTasks = this.state.toDoTasks.concat(this.state.plannerTasks)
+    var primaryString = `${allTasks.length} outstanding tasks`
+    
+    // if allTasks is empty, return a message
+    if (allTasks.length === 0) {
+      primaryString = "No outstanding tasks 😎"
+    }
+
     
     return {
-      primaryText: `${allTasks.length} outstanding tasks`,
+      primaryText: primaryString,
       imageUrl: `https://reckittstorage.blob.core.windows.net/viva-connections-icons/mytasksimage.svg`,
       title: this.properties.title
     };
